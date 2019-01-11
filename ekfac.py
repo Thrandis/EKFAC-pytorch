@@ -172,7 +172,7 @@ class EKFAC(Optimizer):
                 bias.grad.data = gb
                 g_nat = g_nat[:, :-1]
             g_nat = g_nat.contiguous().view(*s)
-            weight.grad.data = g
+            weight.grad.data = g_nat
 
     def _precond_sua_ra(self, weight, bias, group, state):
         """Preconditioning for KFAC SUA."""
