@@ -190,8 +190,8 @@ class KFAC(Optimizer):
         # Computes pi
         pi = 1.0
         if self.pi:
-            tx = torch.trace(xxt) * ggt.shape[0]
-            tg = torch.trace(ggt) * xxt.shape[0]
+            tx = torch.trace(xxt) * xxt.shape[0]
+            tg = torch.trace(ggt) * ggt.shape[0]
             pi = (tx / tg)
         # Regularizes and inverse
         eps = self.eps / num_locations
