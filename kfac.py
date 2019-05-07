@@ -30,12 +30,16 @@ class KFAC(Optimizer):
         self.alpha = alpha
         self.constraint_norm = constraint_norm
         self.params = []
+        self._fwd_handles = []
+        self._bwd_handles = []
         self._iteration_counter = 0
         for mod in net.modules():
             mod_class = mod.__class__.__name__
             if mod_class in ['Linear', 'Conv2d']:
-                mod.register_forward_pre_hook(self._save_input)
-                mod.register_backward_hook(self._save_grad_output)
+                handle = mod.register_forward_pre_hook(self._save_input)
+                self._fwd_handles.append(handle)
+                handle = mod.register_backward_hook(self._save_grad_output)
+                self._bwd_handles.append(handle)
                 params = [mod.weight]
                 if mod.bias is not None:
                     params.append(mod.bias)
@@ -200,3 +204,7 @@ class KFAC(Optimizer):
         ixxt = (xxt + torch.diag(diag_xxt)).inverse()
         iggt = (ggt + torch.diag(diag_ggt)).inverse()
         return ixxt, iggt
+    
+    def __del__(self):
+        for handle in self._fwd_handles + self._bwd_handles:
+            handle.remove()
