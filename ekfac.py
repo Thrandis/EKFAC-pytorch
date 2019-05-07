@@ -29,14 +29,18 @@ class EKFAC(Optimizer):
         self.update_freq = update_freq
         self.alpha = alpha
         self.params = []
+        self._fwd_handles = []
+        self._bwd_handles = []
         self._iteration_counter = 0
         if not self.ra and self.alpha != 1.:
             raise NotImplementedError
         for mod in net.modules():
             mod_class = mod.__class__.__name__
             if mod_class in ['Linear', 'Conv2d']:
-                mod.register_forward_pre_hook(self._save_input)
-                mod.register_backward_hook(self._save_grad_output)
+                handle = mod.register_forward_pre_hook(self._save_input)
+                self._fwd_handles.append(handle)
+                handle = mod.register_backward_hook(self._save_grad_output)
+                self._bwd_handles.append(handle)
                 params = [mod.weight]
                 if mod.bias is not None:
                     params.append(mod.bias)
@@ -292,6 +296,10 @@ class EKFAC(Optimizer):
         g = torch.mm(g.permute(0, 2, 3, 1).contiguous().view(-1, sg[1]), vx)
         g = g.view(vg.size(1), sg[2], sg[3], vx.size(1)).permute(0, 3, 1, 2)
         return g
+
+    def __del__(self):
+        for handle in self._fwd_handles + self._bwd_handles:
+            handle.remove()
 
 
 def grad_wrt_kernel(a, g, padding, stride, target_size=None):
