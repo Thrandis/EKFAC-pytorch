@@ -38,7 +38,7 @@ class KFAC(Optimizer):
             if mod_class in ['Linear', 'Conv2d']:
                 handle = mod.register_forward_pre_hook(self._save_input)
                 self._fwd_handles.append(handle)
-                handle = mod.register_backward_hook(self._save_grad_output)
+                handle = mod.register_full_backward_hook(self._save_grad_output)
                 self._bwd_handles.append(handle)
                 params = [mod.weight]
                 if mod.bias is not None:
