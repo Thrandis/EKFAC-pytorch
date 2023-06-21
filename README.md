@@ -1,5 +1,9 @@
 # EKFAC and K-FAC Preconditioners for Pytorch
-This repo contains a Pytorch (0.4.1) implementation of the EKFAC and K-FAC preconditioners. If you find this software useful, please check the references below and cite accordingly!
+This repo contains a Pytorch implementation of the EKFAC and K-FAC preconditioners. If you find this software useful, please check the references below and cite accordingly!
+
+### Fork Note
+
+This fork's sole purpuse is to update the code to work with the latest Pytorch version removing deprecated functions.
 
 ### Presentation
 
