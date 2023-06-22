@@ -1,10 +1,6 @@
 # EKFAC and K-FAC Preconditioners for Pytorch
 This repo contains a Pytorch implementation of the EKFAC and K-FAC preconditioners. If you find this software useful, please check the references below and cite accordingly!
 
-### Fork Note
-
-This fork's sole purpuse is to update the code to work with the latest Pytorch version removing deprecated functions.
-
 ### Presentation
 
 We implemented K-FAC and EKFAC as `preconditioners`. Preconditioners are similar Pytorch's `optimizer` class, with the exception that they do not perform the update of the parameters, but only change the gradient of those parameters. They can thus be used in combination with your favorite optimizer (we used SGD in our experiments). Note that we only implemented them for `Linear` and `Conv2d` modules, so they will silently skip all the other modules of your network.
